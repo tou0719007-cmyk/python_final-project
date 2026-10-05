@@ -41,7 +41,7 @@ def main():
             pass
 
         elif choice == "9":
-            pass
+            manager.save_task()
 
         elif choice == "0":
             print("程序已退出。")
