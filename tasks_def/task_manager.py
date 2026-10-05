@@ -1,4 +1,5 @@
-import get_time     #导入模块
+import storage
+import get_time    #导入模块
 import task
 class SystemManager:
     #定义类名,属性
@@ -66,6 +67,9 @@ class SystemManager:
 
     def search_tasks(self):
 
+
+    def save_task(self):
+        storage.save_task(self._task_list)
 
 
 
