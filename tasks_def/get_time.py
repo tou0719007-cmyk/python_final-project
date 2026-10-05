@@ -8,7 +8,7 @@ def get_datetime():
             deadline=datetime.strptime(input("请输入截止日期(YYYY-MM-DD):"),"%Y-%m-%d")
             return deadline
         except ValueError:
-            print("输入错误,请重新输入")
+            print ("输入错误,请重新输入")
 
 
 if __name__=="__main__":    #测试代码
