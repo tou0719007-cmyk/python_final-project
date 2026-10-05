@@ -1,4 +1,6 @@
+from task_manager import SystemManager
 def main():
+    manager = SystemManager()
     while True:
         print("\n===== Python任务管理系统 =====")
         print("1. 添加任务")
@@ -8,24 +10,39 @@ def main():
         print("5. 搜索任务")
         print("6. 筛选任务")
         print("7. 统计任务")
-        print("0. 退出")
+        print("8. 导出报告")
+        print("9.  保存   ")
+        print("0.  退出   ")
         
         choice = input("请选择功能：")
 
         if choice == "1":
+            manager.add_task()
             
         elif choice == "2":
+            manager.view_tasks()
             
         elif choice == "3":
+            manager.complete_task()
             
         elif choice == "4":
+            manager.delete_task()
             
         elif choice == "5":
-            
+            pass
+
         elif choice == "6":
-            
+            pass
+
         elif choice == "7":
-            
+            pass
+
+        elif choice == "8":
+            pass
+
+        elif choice == "9":
+            pass
+
         elif choice == "0":
             print("程序已退出。")
             break
