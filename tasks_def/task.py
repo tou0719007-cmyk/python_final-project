@@ -1,4 +1,4 @@
-class Tasks:   #定义类名和属性
+class Task:   #定义类名和属性
     def __init__(self, num, title, priority, deadline, status):
         self.num=num
         self.title=title

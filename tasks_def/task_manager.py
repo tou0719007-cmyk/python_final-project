@@ -23,15 +23,21 @@ class SystemManager:
                     print("输入错误,请重新输入")
                 # 添加一个任务对象
                 else:
-                    new_task = task.Tasks(new_num, new_title, new_priority, new_deadline, new_status)
+                    new_task = task.Task(new_num, new_title, new_priority, new_deadline, new_status)
                     self._task_list.append(new_task)
+                    print("添加成功")
                     break
             except Exception:
                 print("输入错误,请重试")
     #输出所有的任务
     def view_tasks(self):
-        for tasks in self._task_list:
-            print(tasks)
+        if not self._task_list:         #判断列表是否为空
+            print("暂时没有可管理的任务")
+            return
+        else:
+            for tasks in self._task_list:
+                print(tasks)
+
      #更改任务状态为完成
     def complete_task(self):
         while True:
@@ -54,7 +60,7 @@ class SystemManager:
                         self._task_list.remove(tasks)
                         print("删除成功")
                         return
-                    print("该任务不存在,删除失败")
+                print("该任务不存在,删除失败")
             except Exception:
                 print("输入错误,请重新输入")
 
