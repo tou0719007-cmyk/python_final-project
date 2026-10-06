@@ -29,7 +29,7 @@ def main():
             manager.delete_task()
             
         elif choice == "5":
-            pass
+            manager.search_task()
 
         elif choice == "6":
             pass
@@ -38,10 +38,11 @@ def main():
             pass
 
         elif choice == "8":
-            pass
+            report.generate_report(task_list)
 
         elif choice == "9":
             manager.save_task()
+            print("任务已保存。")
 
         elif choice == "0":
             print("程序已退出。")
