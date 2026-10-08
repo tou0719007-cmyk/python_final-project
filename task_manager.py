@@ -123,7 +123,7 @@ class SystemManager:
         if stat["total"] > 0:
             stat["rate"] = stat["done"] * 100.0 / stat["total"]
 
-        return statdef statistics(self):
+        return stat
 
     def filter_tasks(tasks, priority=None, status=None,
                  due_before=None, due_after=None, overdue_only=None):
