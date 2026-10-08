@@ -57,4 +57,4 @@ def chart(task_list):
             x_m+=260
     
     cv2.imshow("image", image_bgr)
-    cv2.imwrite("image_with_chinese.png", image_bgr)
+    cv2.imwrite("chart.png", image_bgr)
