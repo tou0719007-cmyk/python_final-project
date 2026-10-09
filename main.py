@@ -1,6 +1,9 @@
 from task_manager import SystemManager
-def main():
+from report import generate_html_report
+
+def main():#主函数，提供任务管理系统的菜单界面
     manager = SystemManager()
+
     while True:
         print("\n===== Python任务管理系统 =====")
         print("1. 添加任务")
@@ -13,42 +16,34 @@ def main():
         print("8. 导出报告")
         print("9.  保存   ")
         print("0.  退出   ")
+        print("===============================")
         
-        choice = input("请选择功能：")
-
-        if choice == "1":
-            manager.add_task()
-            
-        elif choice == "2":
-            manager.view_tasks()
-            
-        elif choice == "3":
-            manager.complete_task()
-            
-        elif choice == "4":
-            manager.delete_task()
-            
-        elif choice == "5":
-            manager.search_task()
-
-        elif choice == "6":
-            pass
-
-        elif choice == "7":
-            pass
-
-        elif choice == "8":
-            report.generate_report(task_list)
-
-        elif choice == "9":
-            manager.save_task()
-            print("任务已保存。")
-
-        elif choice == "0":
-            print("程序已退出。")
-            break
-        else:
-            print("输入无效，请重新选择。")
+        choice = input("请选择要执行的操作，输入0~9：")
+        match choice:
+            case "1":#添加任务
+                manager.add_task()
+            case "2":#查看任务
+                manager.view_tasks()
+            case "3":#标记完成
+                manager.complete_task()
+            case "4":#删除任务
+                manager.delete_task()
+            case "5":#搜索任务
+                manager.search_task()
+            case "6":#筛选任务
+                manager.filter_tasks()
+            case "7":#统计任务
+                manager.statistics()
+            case "8":#导出报告
+                generate_html_report(manager.get_tasks())
+            case "9":#保存任务
+                manager.save_task()
+                print("任务已保存。")
+            case "0":
+                print("程序已退出。")
+                break
+            case _:#其他情况
+                print("输入无效，请重新选择!")
 
 
 if __name__ == "__main__":
