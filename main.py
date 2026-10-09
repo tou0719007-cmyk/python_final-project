@@ -35,7 +35,7 @@ def main():#主函数，提供任务管理系统的菜单界面
             case "7":#统计任务
                 manager.statistics()
             case "8":#导出报告
-                generate_html_report(manager.get_tasks())
+                generate_html_report(manager._task_list)
             case "9":#保存任务
                 manager.save_task()
                 print("任务已保存。")
