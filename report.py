@@ -54,11 +54,12 @@ def generate_html_report(task_list):
     rows_html = []  # 创建一个空列表用来存每一行数据
     
     for task in task_list:
-        #判断是否逾期
-        if task._status == "未完成" and task.deadline < today_str:
-            tr_class = ' class="overdue"' #如果是逾期，加上红色的类名
+        deadline_str = task.deadline.strftime("%Y-%m-%d")#统一日期格式，再进行比较
+
+        if task._status == "未完成" and deadline_str < today_str:
+            tr_class = ' class="overdue"'
         else:
-            tr_class = '' #否则不加类名
+            tr_class = ''
 
         #HTML代码追加到列表里
         row = f"""
