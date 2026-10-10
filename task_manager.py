@@ -15,8 +15,8 @@ class SystemManager:
                 new_task= input("请输入任务的编号:")
                 for tasks in self._task_list:  # 遍历列表找到目标任务
                     if tasks.num == new_task:
-                        print("该任务编号已存在,请重新输入")
-                        continue
+                        print("该任务编号已存在,添加失败")
+                        return
                 new_num=new_task
                 new_title= input("请输入任务的标题:")
                 new_priority = input("请输入任务的优先级(低/中/高):")
