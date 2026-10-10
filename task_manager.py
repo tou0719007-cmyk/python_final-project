@@ -2,6 +2,21 @@ import storage
 import get_time    #导入模块
 import task
 import datetime
+
+def to_date_str(value):
+    """把截止日期统一成可比较的 "YYYY-MM-DD" 字符串。
+
+    get_time.get_datetime() 返回的是 datetime 对象，而字符串才能按
+    "YYYY-MM-DD" 直接比大小（定长、大单位在前、有补零）。
+    这里做一次转换，筛选和逾期判断就都能正常工作。
+    """
+    if value is None:
+        return ""
+    if hasattr(value, "strftime"):        # datetime / date 对象
+        return value.strftime("%Y-%m-%d")
+    return str(value).strip()             # 已经是字符串, 原样返回
+
+
 class SystemManager:
     #定义类名,属性
     version = 1.0
@@ -86,8 +101,9 @@ class SystemManager:
         result = []         
         if not keyword:             #没输入关键词就直接返回空
             return result
+        key = keyword.lower()       # 统一小写,搜索时忽略大小写
         for t in self._task_list:
-            if keyword in t.title:  #关键词包含在标题里即命中
+            if key in t.title.lower():  #关键词包含在标题里即命中
                 result.append(t)     
         return result                # 不修改原列表，只返回筛选结果
     
@@ -98,7 +114,7 @@ class SystemManager:
         返回：总数、已完成、未完成、完成率、逾期数、高/中/低优先级数量
         注意：report.py、chart.py 也用这个字典，三处数字保证一致
         """
-        today = datetime.datetime.now()  
+        today = datetime.date.today().strftime("%Y-%m-%d")  # 今天，带补零 
         stat = {
             "total": len(self._task_list),
             "done": 0,
@@ -118,8 +134,8 @@ class SystemManager:
                 stat["undone"] += 1
 
             # 2) 逾期：未完成 且 截止日期早于今天
-            #    日期是 YYYY-MM-DD 定长格式，字符串比较结果等同于日期比较
-            if t._status != "已完成" and t.deadline < today:
+            #    先转成 "YYYY-MM-DD" 文本再比较，兼容 get_time 返回的 datetime 对象
+            if t._status != "已完成" and to_date_str(t.deadline) < today:
                 stat["overdue"] += 1
 
             # 3) 按优先级计数（附加任务图表就用这三个数）
@@ -148,23 +164,12 @@ class SystemManager:
         overdue_only : True                —— 只看已逾期的任务
         """
         # 获取今天的日期
-        today = datetime.date.today()
-
-        # 如果输入的是字符串，就转换成 date 类型
-        if isinstance(due_before, str):
-            due_before = datetime.datetime.strptime(
-                due_before, "%Y-%m-%d"
-            ).date()
-
-        if isinstance(due_after, str):
-            due_after = datetime.datetime.strptime(
-                due_after, "%Y-%m-%d"
-            ).date()
-
+        today = datetime.date.today().strftime("%Y-%m-%d")
         result = []
 
         for t in self._task_list:
-            keep = True
+            keep = True                      # 先假设保留，任一条件不满足就置 False
+            due = to_date_str(t.deadline)    # 截止日期统一转成文本再比较
 
             # 条件1：优先级
             if priority is not None:
@@ -176,32 +181,70 @@ class SystemManager:
                 if t._status != status:
                     keep = False
 
-            # 将任务的 datetime 转换成 date，再进行日期比较
-            deadline = t.deadline.date()
-
-            # 条件3：截止日期不晚于 due_before
+            # 条件3：截止日不晚于 due_before（YYYY-MM-DD 定长，可直接比字符串）
             if keep and due_before is not None:
-                if deadline > due_before:
+                if due > due_before:
                     keep = False
 
-            # 条件4：截止日期不早于 due_after
+            # 条件4：截止日不早于 due_after
             if keep and due_after is not None:
-                if deadline < due_after:
+                if due < due_after:
                     keep = False
 
-            # 条件5：只看逾期任务
+            # 条件5：只看逾期（未完成 且 截止日早于今天）
             if keep and overdue_only:
-                is_over = (
-                    t._status != "已完成"
-                    and deadline < today
-                )
-
+                is_over = (t._status != "已完成") and (due < today)
                 if not is_over:
                     keep = False
 
-            # 所有条件都满足，加入结果
             if keep:
-                result.append(t)
+                result.append(t)             # 全部条件通过才收集
 
         return result
-    
+
+     #按优先级排序查看（高→中→低，同级按截止日期升序）
+    def view_by_priority(self):
+        if not self._task_list:                     #判断列表是否为空
+            print("暂时没有可管理的任务")
+            return
+
+        # 用字典把中文优先级映射成数字，便于排序（高=1 在前）
+        rank = {"高": 1, "中": 2, "低": 3}
+        today = datetime.date.today().strftime("%Y-%m-%d")
+
+        # sorted 返回新列表，不改动 self._task_list
+        # key 用元组：先按优先级排名，再按截止日期；优先级相同的截止早的在前
+        sorted_tasks = sorted(
+            self._task_list,
+            key=lambda t: (rank.get(t.priority, 99),
+                           to_date_str(t.deadline))
+        )
+
+        print("--- 按优先级排序（高→中→低） ---")
+        for t in sorted_tasks:
+            print(t)
+
+    #按截止日期排序查看（早→晚，相同日期按优先级高→低）
+    def view_by_deadline(self):
+        if not self._task_list:                     #判断列表是否为空
+            print("暂时没有可管理的任务")
+            return
+
+        # 优先级作为第二排序键，让截止日相同的任务也能区分先后
+        rank = {"高": 1, "中": 2, "低": 3}
+        today = datetime.date.today().strftime("%Y-%m-%d")
+
+        # 空截止日（""）排到最后：用 ("1", "") 这种哨兵值
+        # 实际就是把没有截止日的任务丢到列表尾
+        sorted_tasks = sorted(
+            self._task_list,
+            key=lambda t: (
+                "1" if to_date_str(t.deadline) == "" else "0",
+                to_date_str(t.deadline) if to_date_str(t.deadline) != "" else "9999-12-31",
+                rank.get(t.priority, 99),
+            )
+        )
+
+        print("--- 按截止日期排序（早→晚） ---")
+        for t in sorted_tasks:
+            print(t)
