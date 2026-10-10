@@ -47,7 +47,7 @@ def add_text(image_bgr, x, y, pos, i):#读取任务内容并打印
     #用绿色展示已完成任务，用红色展示未完成任务
     y=pos[3]
     y+=10
-    
+
     return image_bgr
 
 def chushihua(task_list):#初始化
@@ -104,7 +104,6 @@ def chushihua(task_list):#初始化
     return image_bgr
 
 def chart(task_list):
-
     image_bgr=chushihua(task_list)
     
     x_h,x_m,x_l=60,60,60
@@ -126,5 +125,6 @@ def chart(task_list):
             x_m+=260
 
     cv2.imwrite("chart.png", image_bgr)
+    print("打印完成")
 
 #chart(task_list) 测试用
