@@ -187,7 +187,7 @@ class SystemManager:
 
         return result
 
-     #按优先级排序查看（高→中→低，同级按截止日期升序）
+    #按优先级排序查看（高→中→低，同级按截止日期升序）
     def view_by_priority(self):
         if not self._task_list:                     #判断列表是否为空
             print("暂时没有可管理的任务")
