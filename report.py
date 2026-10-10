@@ -13,13 +13,13 @@ def generate_html_report(task_list):
         completion_rate = 0
 
     #获取当前日期
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now().date()
 
     html_head = f"""<!DOCTYPE html>
     <html lang="zh-CN">
     <head>
         <meta charset="UTF-8">
-        <title>任务报告清单 - {today_str}</title>
+        <title>任务报告清单 - {today}</title>
             <style>
                 body {{ font-family: Arial, sans-serif; margin: 40px; }}
                 .header {{ padding-bottom: 20px; margin-bottom: 20px; }}
@@ -28,9 +28,10 @@ def generate_html_report(task_list):
                 th, td {{ border: 1px solid; padding: 8px; text-align: left; border-color: black;}}
                 .overdue {{ color: red; font-weight: bold; }}
             </style>
+    </head>
     <body>
         <div class="header">
-            <p><strong>生成日期：</strong>{today_str}</p >
+            <p><strong>生成日期：</strong>{today}</p >
             <p><strong>任务总数：</strong>{total}</p >
             <p><strong>已完成数：</strong>{completed}</p >
             <p><strong>完成率：</strong>{completion_rate:.1f}%</p >
@@ -54,11 +55,12 @@ def generate_html_report(task_list):
     rows_html = []  # 创建一个空列表用来存每一行数据
     
     for task in task_list:
-        #判断是否逾期
-        if task._status == "未完成" and task.deadline < today_str:
-            tr_class = ' class="overdue"' #如果是逾期，加上红色的类名
+        today = datetime.now().date()
+
+        if task._status != "已完成" and task.deadline.date() < today:
+            tr_class = ' class="overdue"'
         else:
-            tr_class = '' #否则不加类名
+            tr_class = ''
 
         #HTML代码追加到列表里
         row = f"""
@@ -81,7 +83,7 @@ def generate_html_report(task_list):
 
     # "".join(rows_html)把列表里的所有字符串无缝连接在一起
     final_html = html_head + "".join(rows_html) + html_tail
-    filename = f"report_{today_str}.html"
+    filename = f"report_{today}.html"
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(final_html)
