@@ -38,7 +38,7 @@ class SystemManager:
                         num_condition = True
                         break
 
-                if not num_condition:#如果编号重复,则不执行后续代码,重新输入
+                if  num_condition:#如果编号重复,则不执行后续代码,重新输入
                     continue
                 new_num = new_task
                 new_title = input("请输入任务的标题:")
