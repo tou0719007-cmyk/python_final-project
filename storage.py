@@ -1,6 +1,5 @@
 import pickle
 import task
-import task_manager
 
 def save_task(task_list):
     temp=open("data.txt", 'wb') 
@@ -9,7 +8,13 @@ def save_task(task_list):
     temp.close()
 
 def load_task():
-    temp=open("data.txt", 'rb')
-    data=pickle.load(temp)
-    temp.close()
+    try:
+
+        temp=open("data.txt", 'rb')
+        data=pickle.load(temp)
+        temp.close()
+        
+    except FileNotFoundError:
+        data=[]
+    
     return data
