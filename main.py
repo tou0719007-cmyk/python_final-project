@@ -1,7 +1,6 @@
 from task_manager import SystemManager
 from report import generate_html_report
-import chart
-
+import chart 
 def main():#主函数，提供任务管理系统的菜单界面
     manager = SystemManager()
     whether_changed=False #定义一个变量来跟踪任务列表是否已保存，初始值为False，表示未保存
@@ -143,8 +142,8 @@ def main():#主函数，提供任务管理系统的菜单界面
                 whether_changed=False
 
             case "10":#生成图表
+                print(type(chart))
                 chart.chart(manager.get_tasks())
-
             case "0":
                 if whether_changed:#如果任务列表有修改但未保存，提示用户是否保存
                     print("貌似还没有保存任务，是否保存？(yes/no)")
