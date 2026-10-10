@@ -30,12 +30,18 @@ class SystemManager:
             try:
                 #输入基本信息
                 new_task= input("请输入任务的编号:")
+                num_condition= False
+
                 for tasks in self._task_list:  # 遍历列表找到目标任务
                     if tasks.num == new_task:
                         print("该任务编号已存在,请重新输入")
-                        continue
-                new_num=new_task
-                new_title= input("请输入任务的标题:")
+                        num_condition = True
+                        break
+
+                if not num_condition:#如果编号重复,则不执行后续代码,重新输入
+                    continue
+                new_num = new_task
+                new_title = input("请输入任务的标题:")
                 new_priority = input("请输入任务的优先级(低/中/高):")
                 new_deadline=get_time.get_datetime()       #命令有点长,放进get_time.py文件了
                 new_status = input("请输入任务当前状态(未完成/已完成):")
