@@ -171,7 +171,7 @@ def main():#主函数，提供任务管理系统的菜单界面
 
             case "0":
                 if whether_changed:#如果任务列表有修改但未保存，提示用户是否保存
-                    print("貌似还没有保存任务，是否保存？(yes/no)")
+                    print("貌似还没有保存任务，是否保存？\n输入yes保存，否则直接退出")
                     save_choice = input().strip().lower()
                     if save_choice == 'yes':
                         manager.save_task()
