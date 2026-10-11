@@ -67,7 +67,7 @@ def generate_html_report(task_list):
             <tr{tr_class}>
                 <td>{task.num}</td>
                 <td>{task.priority}</td>
-                <td>{task.deadline}</td>
+                <td>{task.deadline.strftime('%Y-%m-%d')}</td>
                 <td>{task._status}</td>
                 <td>{task.title}</td>
             </tr>
