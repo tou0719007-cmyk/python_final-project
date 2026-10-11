@@ -3,10 +3,12 @@ from datetime import datetime
 def generate_html_report(task_list):
     #获取统计数据
     total = len(task_list)
+    #遍历任务列表，计算已完成任务数
     completed = 0
     for t in task_list:
         if t._status == "已完成":
             completed += 1
+    #计算完成率，并兜底
     if total > 0:
         completion_rate = (completed / total * 100)
     else:
@@ -15,18 +17,20 @@ def generate_html_report(task_list):
     #获取当前日期
     today = datetime.now().date()
 
+    #生成HTML报告
+    #构造HTML头部信息
     html_head = f"""<!DOCTYPE html>
     <html lang="zh-CN">
     <head>
         <meta charset="UTF-8">
         <title>任务报告清单 - {today}</title>
             <style>
-                body {{ font-family: Arial, sans-serif; margin: 40px; }}
+                body {{ font-family: Arial; margin: 40px; }}
                 .header {{ padding-bottom: 20px; margin-bottom: 20px; }}
                 .progress-bar {{ width: 300px; margin-top: 10px; }}
                 table {{ width: 100%; border-collapse: collapse; }}
                 th, td {{ border: 1px solid; padding: 8px; text-align: left; border-color: black;}}
-                .overdue {{ color: red; font-weight: bold; }}
+                    .overdue {{ color: red; font-weight: bold; }}
             </style>
     </head>
     <body>
@@ -36,7 +40,6 @@ def generate_html_report(task_list):
             <p><strong>已完成数：</strong>{completed}</p >
             <p><strong>完成率：</strong>{completion_rate:.1f}%</p >
             <progress class="progress-bar" value="{completion_rate:.1f}" max="100"></progress>
-        </div>
 
         <table>
             <thead>
@@ -52,7 +55,7 @@ def generate_html_report(task_list):
             """
 
     #使用for循环遍历并拼接表格行
-    rows_html = []  # 创建一个空列表用来存每一行数据
+    rows_html = []  #创建一个空列表用来存每一行数据
     
     for task in task_list:
         today = datetime.now().date()
@@ -74,6 +77,7 @@ def generate_html_report(task_list):
         """
         rows_html.append(row)
 
+    #拼接HTML尾部信息
     html_tail = """
             </tbody>
         </table>
@@ -83,10 +87,13 @@ def generate_html_report(task_list):
 
     # "".join(rows_html)把列表里的所有字符串无缝连接在一起
     final_html = html_head + "".join(rows_html) + html_tail
+
+    #将HTML报告写入文件，并以当前日期命名
     filename = f"report_{today}.html"
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(final_html)
         print(f"报告已成功导出为：{filename}")
+    #捕获异常并打印错误信息
     except Exception as e:
         print(f"导出失败，错误信息：{e}")
