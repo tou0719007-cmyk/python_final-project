@@ -29,8 +29,12 @@ class SystemManager:
         while True:
             try:
                 #输入基本信息
-                new_task= input("请输入任务的编号:")
-                num_condition= False
+                new_task = input("请输入任务的编号:")
+                # 检查任务编号是否为数字
+                if not new_task.isdigit():#判断这个字符串里面，是不是全部字符都由数字组成，返回布尔值
+                    print("任务编号必须是数字,请重新输入")
+                    continue
+                num_condition = False
 
                 for tasks in self._task_list:  # 遍历列表找到目标任务
                     if tasks.num == new_task:
