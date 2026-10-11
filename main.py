@@ -31,7 +31,7 @@ def main():#主函数，提供任务管理系统的菜单界面
 
                 manager.view_tasks()
 
-                whether_changed=True
+                
 
             case "3":#标记完成
 
