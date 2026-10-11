@@ -1,10 +1,14 @@
 from task_manager import SystemManager
 from report import generate_html_report
 import chart 
+import os
+
 def main():#主函数，提供任务管理系统的菜单界面
     manager = SystemManager()
     whether_changed=False #定义一个变量来跟踪任务列表是否已保存，初始值为False，表示未保存
+
     while True:
+        os.system("cls") #清空终端
         print("\n===== Python任务管理系统 =====")
         print("         1. 添加任务            ")
         print("         2. 查看任务            ")
@@ -13,13 +17,14 @@ def main():#主函数，提供任务管理系统的菜单界面
         print("         5. 搜索任务            ")
         print("         6. 筛选任务            ")
         print("         7. 统计任务            ")
-        print("         8. 导出报告            ")     
+        print("         8. 导出报告            ")
         print("         9.  保存               ")
         print("        10. 生成图表            ")
         print("         0.  退出               ")
         print("===============================")
-        
+
         choice = input("请选择要执行的操作，输入0~10：").strip()#去掉首尾空格
+
         match choice:
             case "1":#添加任务
 
@@ -27,11 +32,13 @@ def main():#主函数，提供任务管理系统的菜单界面
 
                 whether_changed=True
 
+                input("\n按 Enter 键返回主菜单。")
+
             case "2":#查看任务
 
                 manager.view_tasks()
 
-                
+                input("\n按 Enter 键返回主菜单...")
 
             case "3":#标记完成
 
@@ -39,11 +46,15 @@ def main():#主函数，提供任务管理系统的菜单界面
 
                 whether_changed=True
 
+                input("\n按 Enter 键返回主菜单...")
+
             case "4":#删除任务
 
                 manager.delete_task()
 
                 whether_changed=True
+
+                input("\n按 Enter 键返回主菜单...")
 
             case "5":#搜索任务
 
@@ -58,65 +69,70 @@ def main():#主函数，提供任务管理系统的菜单界面
                 else:
                     print("没有找到符合条件的任务。")
 
-            
+                input("\n按 Enter 键返回主菜单...")
+
             case "6":  # 筛选任务
-                
-                    print("\n===== 筛选任务 =====")
-                    print("1. 只看未完成任务")
-                    print("2. 只看已完成任务")
-                    print("3. 只看已逾期任务")
-                    print("4. 按关键字搜索")
-                    print("5. 按优先级排序查看")
-                    print("6. 按截止日期排序查看")
-                    print("0. 返回主菜单")
 
-                    # 获取用户选择
-                    choice = input("请选择操作（0~6）：").strip()
+                print("\n===== 筛选任务 =====")
+                print("1. 只看未完成任务")
+                print("2. 只看已完成任务")
+                print("3. 只看已逾期任务")
+                print("4. 按关键字搜索")
+                print("5. 按优先级排序查看")
+                print("6. 按截止日期排序查看")
+                print("0. 返回主菜单")
 
-                    # 只看未完成任务
-                    if choice == "1":
-                        result = manager.filter_tasks(status="未完成")
+                # 获取用户选择
+                choice = input("请选择操作（0~6）：").strip()
 
-                    # 只看已完成任务
-                    elif choice == "2":
-                        result = manager.filter_tasks(status="已完成")
+                # 只看未完成任务
+                if choice == "1":
+                    result = manager.filter_tasks(status="未完成")
 
-                    # 只看已逾期任务
-                    elif choice == "3":
-                        result = manager.filter_tasks(overdue_only=True)
+                # 只看已完成任务
+                elif choice == "2":
+                    result = manager.filter_tasks(status="已完成")
 
-                    # 按关键字搜索
-                    elif choice == "4":#其实就是搜索功能
-                        keyword = input("请输入任务标题关键词：").strip()#删去输入的内容首位所含空格
-                        result = manager.search_tasks(keyword)
+                # 只看已逾期任务
+                elif choice == "3":
+                    result = manager.filter_tasks(overdue_only=True)
 
-                    # 按优先级排序查看
-                    elif choice == "5":
-                        manager.view_by_priority()
-                        continue # 直接返回主菜单，不需要再显示结果
+                # 按关键字搜索
+                elif choice == "4":#其实就是搜索功能
+                    keyword = input("请输入任务标题关键词：").strip()#删去输入的内容首位所含空格
+                    result = manager.search_tasks(keyword)
 
-                    # 按截止日期排序查看
-                    elif choice == "6":
-                        manager.view_by_deadline()
-                        continue # 直接返回主菜单，不需要再显示结果
+                # 按优先级排序查看
+                elif choice == "5":
+                    manager.view_by_priority()
+                    input("\n按 Enter 键返回主菜单...")
+                    continue # 直接返回主菜单，不需要再显示结果
 
-                    # 返回主菜单
-                    elif choice == "0":
-                        continue
+                # 按截止日期排序查看
+                elif choice == "6":
+                    manager.view_by_deadline()
+                    input("\n按 Enter 键返回主菜单...")
+                    continue # 直接返回主菜单，不需要再显示结果
 
-                    # 处理无效输入
-                    else:
-                        print("你输的不对，重输！")
-                        continue
+                # 返回主菜单
+                elif choice == "0":
+                    continue
 
-                    # 显示结果
-                    if result:
-                        print("\n处理结果：")
-                        for t in result:
-                            print(t)
-                    else:
-                        print("没有符合条件的任务。")
+                # 处理无效输入
+                else:
+                    print("你输的不对，重输！")
+                    input("\n按 Enter 键返回主菜单...")
+                    continue
 
+                # 显示结果
+                if result:
+                    print("\n处理结果：")
+                    for t in result:
+                        print(t)
+                else:
+                    print("没有符合条件的任务。")
+
+                input("\n按 Enter 键返回主菜单...")
 
             case "7":#统计任务
 
@@ -130,10 +146,13 @@ def main():#主函数，提供任务管理系统的菜单界面
                 print(f"中优先级：{stat['mid']}")
                 print(f"低优先级：{stat['low']}")
 
+                input("\n按 Enter 键返回主菜单...")
+
             case "8":#导出报告
 
-             
                 generate_html_report(manager.get_tasks())
+
+                input("\n按 Enter 键返回主菜单...")
 
             case "9":#保存任务
 
@@ -141,9 +160,15 @@ def main():#主函数，提供任务管理系统的菜单界面
                 print("任务已保存。")
                 whether_changed=False
 
+                input("\n按 Enter 键返回主菜单...")
+
             case "10":#生成图表
+
                 print(type(chart))
                 chart.chart(manager.get_tasks())
+
+                input("\n按 Enter 键返回主菜单...")
+
             case "0":
                 if whether_changed:#如果任务列表有修改但未保存，提示用户是否保存
                     print("貌似还没有保存任务，是否保存？(yes/no)")
@@ -151,14 +176,15 @@ def main():#主函数，提供任务管理系统的菜单界面
                     if save_choice == 'yes':
                         manager.save_task()
                         print("任务已保存。")
-                
+
                 print("欢迎下次使用，byebye~")
                 break
 
             case _:#其他情况
 
                 print("你输的输入有误，请重输!")
+                input("\n按 Enter 键返回主菜单...")
 
-
+#测试
 if __name__ == "__main__":
     main()
