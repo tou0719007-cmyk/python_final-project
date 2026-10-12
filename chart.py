@@ -2,18 +2,14 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
-# =========================
-# 常用颜色（OpenCV使用BGR）
-# =========================
+#常用颜色（OpenCV使用BGR）
 white = (255, 255, 255)
 red = (0, 0, 255)
 orange = (0, 165, 255)
 yellow = (0, 255, 255)
-green = (0, 255, 0)       # 已完成
-blue = (255, 0, 0)        # 未完成
-# =========================
-# 添加中文文字
-# =========================
+green = (0, 255, 0)       #已完成
+blue = (255, 0, 0)        #未完成
+#添加中文文字
 def add_chinese(image_bgr, text, position, color, size):
     image = Image.fromarray(
         cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
@@ -31,21 +27,15 @@ def add_chinese(image_bgr, text, position, color, size):
         cv2.COLOR_RGB2BGR
     )
     return image_bgr
-# =========================
-# 获取截止日期字符串
-# =========================
+#获取截止日期字符串
 def get_deadline_str(deadline):
     if hasattr(deadline, "strftime"):
         return deadline.strftime("%Y-%m-%d")
     return str(deadline)
-# =========================
-# 生成任务统计图
-# =========================
+#生成任务统计图
 def chart(task_list):
-    # =========================
-    # 统计各优先级任务数量
-    # 统计全部任务，不受显示数量限制
-    # =========================
+    #统计各优先级任务数量
+    #统计全部任务，不受显示数量限制
     counts = [
         sum(1 for t in task_list if t.priority == "高"),
         sum(1 for t in task_list if t.priority == "中"),
@@ -53,23 +43,21 @@ def chart(task_list):
     ]
     labels = ["高", "中", "低"]
     colors = [red, orange, yellow]
-    # =========================
-    # 图片布局设置
-    # =========================
+    #图片布局设置
     columns = 2
     task_height = 100
-    # 每种优先级最多显示6个任务详情
+    #每种优先级最多显示6个任务详情
     max_display = 6
     high_count, mid_count, low_count = counts
-    # 实际显示的任务数量
+    #实际显示的任务数量
     high_display = min(high_count, max_display)
     mid_display = min(mid_count, max_display)
     low_display = min(low_count, max_display)
-    # 计算各优先级详情需要的行数
+    #计算各优先级详情需要的行数
     high_rows = (high_display + columns - 1) // columns
     mid_rows = (mid_display + columns - 1) // columns
     low_rows = (low_display + columns - 1) // columns
-    # 图片高度根据显示的任务数量计算
+    #图片高度根据显示的任务数量计算
     height = (
         350
         + 60
@@ -77,16 +65,14 @@ def chart(task_list):
         + 3 * 55
         + 80
     )
-    # 图片宽度固定
+    #图片宽度固定
     width = 1000
-    # 创建纯黑色背景
+    #创建黑色背景
     image = np.zeros(
         (height, width, 3),
         dtype=np.uint8
     )
-    # =========================
-    # 标题和生成日期
-    # =========================
+    #标题和生成日期
     today = date.today().strftime("%Y-%m-%d")
     image = add_chinese(
         image,
@@ -102,9 +88,7 @@ def chart(task_list):
         white,
         20
     )
-    # =========================
-    # 绘制柱状图
-    # =========================
+    #绘制柱状图
     max_count = max(counts) if max(counts) > 0 else 1
     bar_x = 100
     bar_width = 120
@@ -117,7 +101,7 @@ def chart(task_list):
             counts[i] / max_count * max_bar_height
         )
         y1 = bar_bottom - bar_height
-        # 绘制柱子
+        #绘制柱子
         cv2.rectangle(
             image,
             (x1, y1),
@@ -125,7 +109,7 @@ def chart(task_list):
             colors[i],
             -1
         )
-        # 显示任务数量
+        #显示任务数量
         cv2.putText(
             image,
             str(counts[i]),
@@ -135,7 +119,7 @@ def chart(task_list):
             white,
             2
         )
-        # 显示优先级名称
+        #显示优先级名称
         image = add_chinese(
             image,
             labels[i],
@@ -143,9 +127,7 @@ def chart(task_list):
             white,
             22
         )
-    # =========================
-    # 分隔线
-    # =========================
+    #分隔
     cv2.line(
         image,
         (30, 310),
@@ -153,9 +135,7 @@ def chart(task_list):
         (120, 120, 120),
         1
     )
-    # =========================
-    # 任务详细信息
-    # =========================
+    #任务详细信息
     y = 330
     priority_colors = {
         "高": red,
@@ -163,14 +143,14 @@ def chart(task_list):
         "低": yellow
     }
     for priority in ["高", "中", "低"]:
-        # 找出当前优先级的全部任务
+        #找出当前优先级的全部任务
         tasks = [
             t for t in task_list
             if t.priority == priority
         ]
-        # 实际显示的任务
+        #实际显示的任务
         display_tasks = tasks[:max_display]
-        # 显示优先级标题
+        #显示优先级标题
         image = add_chinese(
             image,
             f"{priority}优先级（共{len(tasks)}个任务）",
@@ -179,13 +159,13 @@ def chart(task_list):
             22
         )
         y += 35
-        # 每行显示两个任务
+        #每行显示两个任务
         for index, t in enumerate(display_tasks):
             row = index // columns
             column = index % columns
             x = 40 + column * 480
             task_y = y + row * task_height
-            # 优先级颜色条
+            #优先级颜色条
             cv2.rectangle(
                 image,
                 (x, task_y),
@@ -201,7 +181,7 @@ def chart(task_list):
                 white,
                 17
             )
-            # 截止日期
+            #截止日期
             deadline = get_deadline_str(t.deadline)
             image = add_chinese(
                 image,
@@ -222,7 +202,7 @@ def chart(task_list):
                 status_color,
                 16
             )
-        # 根据实际显示数量计算行数
+        #根据实际显示数量计算行数
         display_count = len(display_tasks)
         rows = (display_count + columns - 1) // columns
         # 超过显示上限时提示剩余数量
@@ -237,8 +217,6 @@ def chart(task_list):
             y += 25
         # 移动到下一种优先级的区域
         y += rows * task_height + 20
-    # =========================
-    # 保存图片
-    # =========================
+    #保存图片
     cv2.imwrite("chart.png", image)
     print("图表已成功保存为 chart.png")

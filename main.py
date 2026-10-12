@@ -120,7 +120,7 @@ def main():#主函数，提供任务管理系统的菜单界面
 
                 # 处理无效输入
                 else:
-                    print("你输的不对，重输！")
+                    print("你输的不对！")
                     input("\n按 Enter 键返回主菜单...")
                     continue
 
